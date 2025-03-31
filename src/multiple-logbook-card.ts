@@ -11,7 +11,7 @@ import {
   HistoryOrCustomLogEvent,
   CustomLogEvent,
   MultipleLogbookCardConfig,
-} from './types';
+ } from './types';
 import { DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION } from './const';
 import { EntityCustomLogConfig, getCustomLogsPromise } from './custom-logs';
 import { EntityHistoryConfig, getHistory } from './history';
@@ -63,6 +63,12 @@ export class MultipleLogbookCard extends LogbookBaseCard {
       scroll: true,
       custom_logs: false,
       show_history: true,
+      service_to_call: '',
+      gallery: {
+        show_gallery: false,
+        variations: '',
+        naming_pattern: ''
+      },
       ...config,
       hours_to_show: config.hours_to_show
         ? config.hours_to_show

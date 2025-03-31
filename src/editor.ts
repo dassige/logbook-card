@@ -80,6 +80,14 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
     return '';
   }
 
+  get _service_to_call(): string {
+    if (this._config) {
+      return this._config.service_to_call || '';
+    }
+
+    return '';
+  }
+
   get _no_event(): string {
     if (this._config) {
       return this._config.no_event || '';

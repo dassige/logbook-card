@@ -24,7 +24,9 @@
     "fecha": "4.2.1",
     "home-assistant-js-websocket": "8.2.0",
     "humanize-duration-ts": "2.1.1",
-    "lit": "2.7.6"
+    "lit": "2.7.6",
+    "pinch-zoom-js": "^2.3.5",
+    "swipejs": "^2.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.22.8",

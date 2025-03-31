@@ -28,7 +28,9 @@ export interface LogbookCardConfigBase extends LovelaceCardConfig {
   hold_action?: ActionConfig;
   double_tap_action?: ActionConfig;
   allow_copy?: boolean;
-}
+  service_to_call?: string;
+  gallery?: GalleryConfiguration;
+ }
 
 export interface EntityCardConfig {
   attributes?: Array<AttributeConfig>;
@@ -45,6 +47,12 @@ export interface LogbookCardConfig extends LogbookCardConfigBase, EntityCardConf
 
 export interface MultipleLogbookCardConfig extends LogbookCardConfigBase {
   entities?: EntityCardConfig[];
+}
+
+export interface GalleryConfiguration {
+  show_gallery: boolean;
+  variations: string;
+  naming_pattern: string;
 }
 
 export interface HiddenConfig {

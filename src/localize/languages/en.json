@@ -10,7 +10,9 @@
     "invalid_minimal_duration": "minimal_duration must be a positive integer",
     "invalid_duration_units": "duration.units must be an array",
     "invalid_duration_largest": "duration.largest must be an integer or `full`",
-    "collapse_greater_than_max_items": "collapse must be lower than max-items"
+    "collapse_greater_than_max_items": "collapse must be lower than max-items",
+    "choose_duration_or_elapsed": "Only duration or elapsed_time can be visible at the same time"
+
   },
   "logbook_card": {
     "default_title": "{entity} History",

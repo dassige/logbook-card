@@ -5,13 +5,15 @@ import { customElement, property, state } from 'lit/decorators.js';
 
 import './logbook-date';
 import './logbook-duration';
+import './logbook-elapsedtime';
 import {
   History,
   ExtendedHomeAssistant,
   HistoryOrCustomLogEvent,
   CustomLogEvent,
   MultipleLogbookCardConfig,
- } from './types';
+  Attribute,
+} from './types';
 import { DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION } from './const';
 import { EntityCustomLogConfig, getCustomLogsPromise } from './custom-logs';
 import { EntityHistoryConfig, getHistory } from './history';
@@ -20,7 +22,7 @@ import { LogbookBaseCard } from './logbook-base-card';
 import { checkBaseConfig } from './config-validator';
 import { addCustomCard } from './ha/custom-card';
 import { localize } from './localize/localize';
-import { calculateStartDate, dayToHours } from './date-helpers';
+import { calculateStartDate, dayToHours, dateDiffMillisecs } from './date-helpers';
 
 addCustomCard(
   'multiple-logbook-card',
@@ -67,7 +69,7 @@ export class MultipleLogbookCard extends LogbookBaseCard {
       gallery: {
         show_gallery: false,
         variations: '',
-        naming_pattern: ''
+        naming_pattern: '',
       },
       ...config,
       hours_to_show: config.hours_to_show
@@ -140,8 +142,20 @@ export class MultipleLogbookCard extends LogbookBaseCard {
             allHistory = allHistory.splice(0, this.config?.max_items);
           }
 
-          this.history = allHistory;
+          let previousStartDate: Date | null = null;
+          for (let i = allHistory.length; i > 0; i--) {
+            const currentDate: Date = allHistory[i - 1]?.start ?? null;
+            let value;
+            if (previousStartDate === null) {
+              value = 0;
+            } else {
+              value = dateDiffMillisecs(currentDate,previousStartDate);
+            }
+            (allHistory[i - 1] as History).elapsed_time = value;
+            previousStartDate = currentDate;
+          }
 
+          this.history = allHistory;
           this.lastHistoryChanged = new Date();
         });
       }

@@ -4,6 +4,7 @@ export const CARD_VERSION = '2.5.6';
 export const DEFAULT_SHOW: ShowConfiguration = {
   state: true,
   duration: true,
+  elapsed_time: false,
   start_date: true,
   end_date: true,
   icon: true,

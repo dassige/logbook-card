@@ -14,7 +14,7 @@ import { styleMap, StyleInfo } from 'lit/directives/style-map.js';
 import { isSameDay } from './date-helpers';
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
 import PinchZoom from 'pinch-zoom-js';
-//import Swipe from 'swipejs';
+
 
 export abstract class LogbookBaseCard extends LitElement {
   @property({ attribute: false }) public hass!: ExtendedHomeAssistant;
@@ -23,7 +23,7 @@ export abstract class LogbookBaseCard extends LitElement {
   private updateHistoryIntervalId: NodeJS.Timeout | null = null;
   private UPDATE_INTERVAL = 5000;
   protected currentItemId: string | undefined = undefined;
-
+  //protected customAttributes :Array<Attribute>
   protected _handleAction(ev: ActionHandlerEvent): void {
     if (this.hass && ev.detail.action && !!ev.target && ev.target['entity']) {
       handleAction(this, this.hass, { entity: ev.target['entity'] }, ev.detail.action);
@@ -134,15 +134,23 @@ export abstract class LogbookBaseCard extends LitElement {
                 : html``
             }
             ${
-              config?.show?.duration
-                ? html`
+              config?.show?.duration?
+                 html`
                       <span class="duration" >
-                        <logbook-duration .hass="${this.hass}" .config="${config}" .duration="${item.duration} >
-                        </logbook-duration>
+                        <logbook-duration .hass="${this.hass}" .config="${config}" .duration="${item.duration}"></logbook-duration>
                       </span>
                     `
                 : html``
-            }
+             }
+             ${
+              config?.show?.elapsed_time?
+                 html`
+                      <span class="duration" >
+                        <logbook-elapsedtime .hass="${this.hass}" .config="${config}" .duration="${item.elapsed_time}"></logbook-elapsedtime>
+                      </span>
+                    `
+                : html``
+             }
             ${this.renderHistoryDate(item, config)}${item.attributes?.map(this.renderAttributes)}
           </div>
         </div>
@@ -176,7 +184,8 @@ export abstract class LogbookBaseCard extends LitElement {
         @touchmove="${event => this.handleTouchMove(event)}"
       >
         <img class="modal-content" id="popupImage" />
-        <div id="popupCaption"></div>
+       <div id="popupCaption"></div>
+
       </div>
     `;
   }
@@ -290,9 +299,10 @@ export abstract class LogbookBaseCard extends LitElement {
         captionText.innerHTML = value;
       }
     }
-
+//setup pinch and zoom
     const pz = new PinchZoom(modalImg, {
       draggableUnzoomed: false,
+      zoomOutFactor: 1,
       minZoom: 1,
       onZoomStart: function(object, event) {
         // Do something on zoom start
@@ -335,7 +345,9 @@ export abstract class LogbookBaseCard extends LitElement {
       start: historyItem.start,
       end: historyItem.end,
       duration: historyItem.duration,
+      elapsed_time: historyItem.elapsed_time,
       attributes: historyItem.attributes,
+
     });
 
     /***EMPTY History obj
@@ -518,12 +530,11 @@ export abstract class LogbookBaseCard extends LitElement {
         height: auto;
       }
 
-     /* The Modal (background) */
       .modal {
         display: none; /* Hidden by default */
         position: fixed; /* Stay in place */
         z-index: 1; /* Sit on top */
-        padding-top: 100px; /* Location of the box */
+        padding-top: 1px; /* Location of the box */
         left: 0;
         top: 0;
         width: 100%; /* Full width */
@@ -547,22 +558,14 @@ export abstract class LogbookBaseCard extends LitElement {
         text-align: center;
         color: #ccc;
         padding: 10px 0;
-        height: 150px;
       }
-      /* Add Animation - Zoom in the Modal */
-      .modal-content, #popupCaption {
-        animation-name: zoom;
-        animation-duration: 0.6s;
-      }
-      @keyframes zoom {
-        from {transform:scale(0)}
-        to {transform:scale(1)}
-      }
+
       /* 100% Image Width on Smaller Screens */
       @media only screen and (max-width: 700px){
         .modal-content {
           width: 100%;
         }
+
       }
        img.hover-shadow {
         transition: 0.3s;
@@ -571,21 +574,7 @@ export abstract class LogbookBaseCard extends LitElement {
       .hover-shadow:hover {
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
       }
-      .swipe {
-        overflow: hidden;
-        visibility: hidden;
-        position: relative;
-      }
-      .swipe-wrap {
-        overflow: hidden;
-        position: relative;
-      }
-      .swipe-wrap > div {
-        float: left;
-        width: 100%;
-        position: relative;
-        overflow: hidden;
-      }
+
       .history-row-selected {
         background-color:rgb(199, 251, 251);
         color:rgb(0, 0, 0);
@@ -611,7 +600,7 @@ export abstract class LogbookBaseCard extends LitElement {
       }
       .item {
         clear: both;
-        padding: 5px 0;
+        padding: 5px 2px;
         display: flex;
         line-height: var(--paper-font-body1_-_line-height);
       }

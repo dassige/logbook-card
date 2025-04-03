@@ -13,3 +13,5 @@ export const calculateStartDate = (hoursToShow = DEFAULT_HOURS_TO_SHOW): Date =>
 };
 
 export const dayToHours = (nbOfDays: number): number => nbOfDays * 24;
+export const dateDiffMillisecs = (bigger: Date, smaller: Date): number => bigger.getTime() - smaller.getTime();
+

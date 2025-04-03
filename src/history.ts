@@ -37,6 +37,7 @@ export const toHistory = (
         start: new Date(h.last_changed),
         attributes: extractAttributes(h, config, hass),
         icon: mapIcon(h, config.state_map || []),
+        elapsed_time: 0,
       }))
       .map((x, i, arr) => {
         if (i < arr.length - 1) {

@@ -135,6 +135,7 @@ export interface IconState {
 export interface ShowConfiguration {
   state: boolean;
   duration: boolean;
+  elapsed_time: boolean;
   start_date: boolean;
   end_date: boolean;
   icon: boolean;
@@ -160,6 +161,7 @@ export interface History {
   attributes: Array<Attribute>;
   duration: number;
   icon: IconState;
+  elapsed_time: number;
 }
 
 export interface CustomLogEvent {

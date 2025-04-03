@@ -23,6 +23,7 @@
     - [State map object](#state-map-object)
     - [Custom log map object](#custom-log-map-object)
     - [Available show options](#available-show-options)
+    - [Gallery object](#gallery-object)
     - [Attribute object](#attribute-object)
     - [Duration object](#duration-object)
     - [Duration labels object](#duration-labels-object)
@@ -43,6 +44,9 @@
   - [Custom icons](#custom-icons)
   - [Example with collapsed view](#example-with-collapsed-view)
   - [Custom log](#custom-log)
+  - [Gallery](#gallery)
+  - [Service call](#service-call)
+
 
 ## Installation
 
@@ -67,103 +71,112 @@ resources:
 
 #### Logbook Card options
 
-| Name              | Type                                                      | Required     | Since   | Deprecated | Default                  | Description                                                                                                                                  |
-|-------------------|-----------------------------------------------------------|--------------|---------|------------|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| type              | string                                                    | **required** | v0.1    |            | `custom:logbook-card`    |                                                                                                                                              |
-| entity            | string                                                    | **required** | v0.1    |            | An entity_id.            |                                                                                                                                              |
-| title             | string                                                    | optional     | v0.1    |            | _friendly_name_ History  | Card title                                                                                                                                   |
-| history           | integer                                                   | optional     | v0.1    | v2.4.0     | 5                        | Numbers of days of history of the logbook                                                                                                    |
-| hours_to_show     | integer                                                   | optional     | v2.4.0  |            | 120                      | Numbers of hours of history of the logbook                                                                                                   |
-| hidden_state      | string[] or [hidden config object](#hidden-config-object) | optional     | v1.6.0  |            | []                       | Hide logbook entry based on state and/or attribute. string value represent the state (wildcards are supported)                               |
-| desc              | bool                                                      | optional     | v0.1    |            | True                     | is logbook ordered descending                                                                                                                |
-| no_event          | string                                                    | optional     | v0.1    |            | No event on the period   | message displayed if no event to display                                                                                                     |
-| max_items         | integer                                                   | optional     | v0.2    |            | -1                       | Number of items to display. Ignored if < 0                                                                                                   |
-| state_map         | [state map object](#state-map-object)                     | optional     | v0.2    |            | []                       | List of entity states to convert                                                                                                             |
-| custom_log_map    | [custom log map object](#custom-log-map-object)           | optional     | v2.1    |            | []                       | List of custom log to convert                                                                                                                |
-| show              | list                                                      | optional     | v0.2    |            |                          | List of UI elements to display/hide, for available items see available [show options](#available-show-options).                              |
-| attributes        | [attributes object](#attribute-object)                    | optional     | v0.4    |            | []                       | List of attributes to display.                                                                                                               |
-| duration_labels   | [duration_labels object](#until-v141)                     | optional     | v0.5    | v1.5.0     |                          | labels for duration.                                                                                                                         |
-| date_format       | string or `relative`                                      | optional     | v1.0    |            | default date time format | see [fecha formatting token](https://github.com/taylorhakes/fecha#formatting-tokens). Use `relative` to have relative time like `2 days ago` |
-| separator_style   | [separator_style object](#separator-style-object)         | optional     | v1.0    |            |                          | see style for separator (if activated)                                                                                                       |
-| collapse          | number                                                    | optional     | v1.2    |            |                          | Number of entities to show. Rest will be available in expandable section                                                                     |
-| custom_logs       | boolean                                                   | optional     | v1.13.0 |            | false                    | display custom logs sent by `logbook.log` service                                                                                            |
-| show_history      | boolean                                                   | optional     | v2.0    |            | true                     | Display entity logbook event                                                                                                                 |
-| duration          | [duration object](#duration-object)                       | optional     | v1.5.0  |            |                          | duration configuration                                                                                                                       |
-| scroll            | boolean                                                   | optional     | v1.9.0  |            | true                     | set a max height for card and use scrollbar                                                                                                  |
-| tap_action        | [action object](#action-options)                          | optional     | v1.7.0  |            | action: more-info        | Action to take on tap                                                                                                                        |
-| hold_action       | [action object](#action-options)                          | optional     | v1.7.0  |            | none                     | Action to take on hold                                                                                                                       |
-| double_tap_action | [action object](#action-options)                          | optional     | v1.7.0  |            | none                     | Action to take on double tap                                                                                                                 |
-| minimal_duration  | number (in seconds)                                       | optional     | v1.11.0 |            |                          | Filter entry if duration is less than `minimal_duration` (entry will be squash if previous and next entry has same state)                    |
-| group_by_day      | boolean                                                   | optional     | v2.0.0  |            | false                    | Group entries by day using a day separator                                                                                                   |
+
+| Name              | Type                                                     | Required     | Since   | Deprecated | Default                  | Description                                                                                                                                 |
+| ------------------- | ---------------------------------------------------------- | -------------- | --------- | ------------ | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| type              | string                                                   | **required** | v0.1    |            | `custom:logbook-card`    |                                                                                                                                             |
+| entity            | string                                                   | **required** | v0.1    |            | An entity_id.            |                                                                                                                                             |
+| title             | string                                                   | optional     | v0.1    |            | _friendly_name_ History  | Card title                                                                                                                                  |
+| history           | integer                                                  | optional     | v0.1    | v2.4.0     | 5                        | Numbers of days of history of the logbook                                                                                                   |
+| hours_to_show     | integer                                                  | optional     | v2.4.0  |            | 120                      | Numbers of hours of history of the logbook                                                                                                  |
+| hidden_state      | string[] or[hidden config object](#hidden-config-object) | optional     | v1.6.0  |            | []                       | Hide logbook entry based on state and/or attribute. string value represent the state (wildcards are supported)                              |
+| desc              | bool                                                     | optional     | v0.1    |            | True                     | is logbook ordered descending                                                                                                               |
+| no_event          | string                                                   | optional     | v0.1    |            | No event on the period   | message displayed if no event to display                                                                                                    |
+| max_items         | integer                                                  | optional     | v0.2    |            | -1                       | Number of items to display. Ignored if < 0                                                                                                  |
+| state_map         | [state map object](#state-map-object)                    | optional     | v0.2    |            | []                       | List of entity states to convert                                                                                                            |
+| custom_log_map    | [custom log map object](#custom-log-map-object)          | optional     | v2.1    |            | []                       | List of custom log to convert                                                                                                               |
+| show              | list                                                     | optional     | v0.2    |            |                          | List of UI elements to display/hide, for available items see available[show options](#available-show-options).                              |
+| attributes        | [attributes object](#attribute-object)                   | optional     | v0.4    |            | []                       | List of attributes to display.                                                                                                              |
+| duration_labels   | [duration_labels object](#until-v141)                    | optional     | v0.5    | v1.5.0     |                          | labels for duration.                                                                                                                        |
+| date_format       | string or`relative`                                      | optional     | v1.0    |            | default date time format | see[fecha formatting token](https://github.com/taylorhakes/fecha#formatting-tokens). Use `relative` to have relative time like `2 days ago` |
+| separator_style   | [separator_style object](#separator-style-object)        | optional     | v1.0    |            |                          | see style for separator (if activated)                                                                                                      |
+| collapse          | number                                                   | optional     | v1.2    |            |                          | Number of entities to show. Rest will be available in expandable section                                                                    |
+| custom_logs       | boolean                                                  | optional     | v1.13.0 |            | false                    | display custom logs sent by`logbook.log` service                                                                                            |
+| show_history      | boolean                                                  | optional     | v2.0    |            | true                     | Display entity logbook event                                                                                                                |
+| duration          | [duration object](#duration-object)                      | optional     | v1.5.0  |            |                          | duration configuration                                                                                                                      |
+| scroll            | boolean                                                  | optional     | v1.9.0  |            | true                     | set a max height for card and use scrollbar                                                                                                 |
+| tap_action        | [action object](#action-options)                         | optional     | v1.7.0  |            | action: more-info        | Action to take on tap                                                                                                                       |
+| hold_action       | [action object](#action-options)                         | optional     | v1.7.0  |            | none                     | Action to take on hold                                                                                                                      |
+| double_tap_action | [action object](#action-options)                         | optional     | v1.7.0  |            | none                     | Action to take on double tap                                                                                                                |
+| minimal_duration  | number (in seconds)                                      | optional     | v1.11.0 |            |                          | Filter entry if duration is less than`minimal_duration` (entry will be squash if previous and next entry has same state)                    |
+| group_by_day      | boolean                                                  | optional     | v2.0.0  |            | false                    | Group entries by day using a day separator                                                                                                  |
+
 
 #### Multiple entities Logbook Card options
 
 the `custom:multiple-logbook-card` card has been introduce in v2.0.0.
 
-| Name              | Type                                              | Required     | Since  | Deprecated | Default                        | Description                                                                                                                                  |
-|-------------------|---------------------------------------------------|--------------|--------|------------|--------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| type              | string                                            | **required** | v2.0.0 |            | `custom:multiple-logbook-card` |                                                                                                                                              |
-| entities          | [entity config object](#entity-object)            | **required** | v2.0.0 |            |                                | List of entities with its configuration.                                                                                                     |
-| title             | string                                            | optional     | v2.0.0 |            |                                | Card title. Hidden if empty                                                                                                                  |
-| history           | integer                                           | optional     | v2.0.0 | v2.4.0     | 5                              | Numbers of days of history of the logbook                                                                                                    |
-| hours_to_show     | integer                                           | optional     | v2.4.0 |            | 120                            | Numbers of hours of history of the logbook                                                                                                   |
-| desc              | bool                                              | optional     | v2.0.0 |            | True                           | is logbook ordered descending                                                                                                                |
-| no_event          | string                                            | optional     | v2.0.0 |            | No event on the period         | message displayed if no event to display                                                                                                     |
-| max_items         | integer                                           | optional     | v2.0.0 |            | -1                             | Number of items to display. Ignored if < 0                                                                                                   |
-| show              | list                                              | optional     | v2.0.0 |            |                                | List of UI elements to display/hide, for available items see available [show options](#available-show-options).                              |
-| duration_labels   | [duration_labels object](#until-v141)             | optional     | v2.0.0 |            |                                | labels for duration.                                                                                                                         |
-| date_format       | string or `relative`                              | optional     | v2.0.0 |            | default date time format       | see [fecha formatting token](https://github.com/taylorhakes/fecha#formatting-tokens). Use `relative` to have relative time like `2 days ago` |
-| separator_style   | [separator_style object](#separator-style-object) | optional     | v2.0.0 |            |                                | see style for separator (if activated)                                                                                                       |
-| collapse          | number                                            | optional     | v2.0.0 |            |                                | Number of entities to show. Rest will be available in expandable section                                                                     |
-| duration          | [duration object](#duration-object)               | optional     | v2.0.0 |            | duration configuration         |                                                                                                                                              |
-| scroll            | boolean                                           | optional     | v2.0.0 |            | true                           | set a max height for card and use scrollbar                                                                                                  |
-| tap_action        | [action object](#action-options)                  | optional     | v2.0.0 |            | action: more-info              | Action to take on tap                                                                                                                        |
-| hold_action       | [action object](#action-options)                  | optional     | v2.0.0 |            | none                           | Action to take on hold                                                                                                                       |
-| double_tap_action | [action object](#action-options)                  | optional     | v2.0.0 |            | none                           | Action to take on double tap                                                                                                                 |
-| minimal_duration  | number (in seconds)                               | optional     | v2.0.0 |            |                                | Filter entry if duration is less than `minimal_duration` (entry will be squash if previous and next entry has same state)                    |
-| group_by_day      | boolean                                           | optional     | v2.0.0 |            | false                          | Group entries by day using a day separator                                                                                                   |
+
+| Name              | Type                                              | Required     | Since  | Deprecated | Default                        | Description                                                                                                                                 |
+| ------------------- | --------------------------------------------------- | -------------- | -------- | ------------ | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| type              | string                                            | **required** | v2.0.0 |            | `custom:multiple-logbook-card` |                                                                                                                                             |
+| entities          | [entity config object](#entity-object)            | **required** | v2.0.0 |            |                                | List of entities with its configuration.                                                                                                    |
+| title             | string                                            | optional     | v2.0.0 |            |                                | Card title. Hidden if empty                                                                                                                 |
+| history           | integer                                           | optional     | v2.0.0 | v2.4.0     | 5                              | Numbers of days of history of the logbook                                                                                                   |
+| hours_to_show     | integer                                           | optional     | v2.4.0 |            | 120                            | Numbers of hours of history of the logbook                                                                                                  |
+| desc              | bool                                              | optional     | v2.0.0 |            | True                           | is logbook ordered descending                                                                                                               |
+| no_event          | string                                            | optional     | v2.0.0 |            | No event on the period         | message displayed if no event to display                                                                                                    |
+| max_items         | integer                                           | optional     | v2.0.0 |            | -1                             | Number of items to display. Ignored if < 0                                                                                                  |
+| show              | list                                              | optional     | v2.0.0 |            |                                | List of UI elements to display/hide, for available items see available[show options](#available-show-options).                              |
+| duration_labels   | [duration_labels object](#until-v141)             | optional     | v2.0.0 |            |                                | labels for duration.                                                                                                                        |
+| date_format       | string or`relative`                               | optional     | v2.0.0 |            | default date time format       | see[fecha formatting token](https://github.com/taylorhakes/fecha#formatting-tokens). Use `relative` to have relative time like `2 days ago` |
+| separator_style   | [separator_style object](#separator-style-object) | optional     | v2.0.0 |            |                                | see style for separator (if activated)                                                                                                      |
+| collapse          | number                                            | optional     | v2.0.0 |            |                                | Number of entities to show. Rest will be available in expandable section                                                                    |
+| duration          | [duration object](#duration-object)               | optional     | v2.0.0 |            | duration configuration         |                                                                                                                                             |
+| scroll            | boolean                                           | optional     | v2.0.0 |            | true                           | set a max height for card and use scrollbar                                                                                                 |
+| tap_action        | [action object](#action-options)                  | optional     | v2.0.0 |            | action: more-info              | Action to take on tap                                                                                                                       |
+| hold_action       | [action object](#action-options)                  | optional     | v2.0.0 |            | none                           | Action to take on hold                                                                                                                      |
+| double_tap_action | [action object](#action-options)                  | optional     | v2.0.0 |            | none                           | Action to take on double tap                                                                                                                |
+| minimal_duration  | number (in seconds)                               | optional     | v2.0.0 |            |                                | Filter entry if duration is less than`minimal_duration` (entry will be squash if previous and next entry has same state)                    |
+| group_by_day      | boolean                                           | optional     | v2.0.0 |            | false                          | Group entries by day using a day separator                                                                                                  |
+| gallery           | [Gallery object](#gallery-object)                 | optional     | DGsoft |            |                                |
+|service_to_call    | string                                            | optional     | DGsoft |            |                                | hass service that will be called when clicking on an log item row. Format is `servicetype.servicename`. All the history item properties will be passed to the service as parameters. See example at [Service call](#service-call)
 
 #### Entity object
 
-| Name              | Type                                                      | Required     | Since   | Deprecated | Default | Description                                                                                                              |
-|-------------------|-----------------------------------------------------------|--------------|---------|------------|---------|--------------------------------------------------------------------------------------------------------------------------|
-| entity            | string                                                    | **required** | v2.0    |            |         | Name of the entity                                                                                                       |
-| label             | string                                                    | optional     | v2.1    |            |         | Entity label                                                                                                             |
-| attributes        | [attributes object](#attribute-object)                    | optional     | v2.0    |            | []      | List of attributes to display.                                                                                           |
-| hidden_state      | string[] or [hidden config object](#hidden-config-object) | optional     | v2.0    |            | []      | Hide logbook entry based on state and/or attribute. string value represent the state (wildcards are supported)           |
-| custom_logs       | boolean                                                   | optional     | v2.0    |            | false   | Display custom logs sent by `logbook.log` service. Set `show_history` to  `false` if you only want custom logs displayed |
-| show_history      | boolean                                                   | optional     | v2.0    |            | true    | Display entity logbook event                                                                                             |
-| state_map         | [state map object](#state-map-object)                     | optional     | v2.0    |            | []      | List of entity states to convert                                                                                         |
-| custom_log_map    | [custom log map object](#custom-log-map-object)           | optional     | v2.1    |            | []      | List of custom log to convert                                                                                            |
+
+| Name           | Type                                                     | Required     | Since | Deprecated | Default | Description                                                                                                             |
+| ---------------- | ---------------------------------------------------------- | -------------- | ------- | ------------ | --------- | ------------------------------------------------------------------------------------------------------------------------- |
+| entity         | string                                                   | **required** | v2.0  |            |         | Name of the entity                                                                                                      |
+| label          | string                                                   | optional     | v2.1  |            |         | Entity label                                                                                                            |
+| attributes     | [attributes object](#attribute-object)                   | optional     | v2.0  |            | []      | List of attributes to display.                                                                                          |
+| hidden_state   | string[] or[hidden config object](#hidden-config-object) | optional     | v2.0  |            | []      | Hide logbook entry based on state and/or attribute. string value represent the state (wildcards are supported)          |
+| custom_logs    | boolean                                                  | optional     | v2.0  |            | false   | Display custom logs sent by`logbook.log` service. Set `show_history` to  `false` if you only want custom logs displayed |
+| show_history   | boolean                                                  | optional     | v2.0  |            | true    | Display entity logbook event                                                                                            |
+| state_map      | [state map object](#state-map-object)                    | optional     | v2.0  |            | []      | List of entity states to convert                                                                                        |
+| custom_log_map | [custom log map object](#custom-log-map-object)          | optional     | v2.1  |            | []      | List of custom log to convert                                                                                           |
 
 #### State map object
 
-| Name                   |  Type                                                     |      Default       | Description                             | Since  |
-| ---------------------- | :-------------------------------------------------------: | :----------------: | --------------------------------------- | ------ |
-| value **_(required)_** | string                                                    |                    | Value to convert. wildcard is supported |        |
-| label                  | string                                                    |   same as value    | String to show as label.                |        |
-| icon                   | string                                                    | default state icon | Icon to show.                           |        |
-| icon_color             | string                                                    |                    | icon color for this state.              | v1.6.0 |
-| attributes             | [attribute state map object](#attribute-state-map-object) | []                 | Attributes to match to be converted     | v2.5.0 |
+
+| Name                  |                           Type                           |      Default      | Description                             | Since  |
+| ----------------------- | :---------------------------------------------------------: | :------------------: | ----------------------------------------- | -------- |
+| value**_(required)_** |                          string                          |                   | Value to convert. wildcard is supported |        |
+| label                 |                          string                          |   same as value   | String to show as label.                |        |
+| icon                  |                          string                          | default state icon | Icon to show.                           |        |
+| icon_color            |                          string                          |                   | icon color for this state.              | v1.6.0 |
+| attributes            | [attribute state map object](#attribute-state-map-object) |         []         | Attributes to match to be converted     | v2.5.0 |
 
 If you use wildcard, make sure to put the more specific states first.
 
 #### Attribute state map object
 
-| Name                   |  Type   | Default | Description                             | Since  |
-| ---------------------- | :-----: | :-----: | --------------------------------------- | ------ |
-| name **_(required)_**  | string  |         | attribute name.                         | v2.5.0 |
-| value **_(required)_** | string  |         | attribute value. wildcard is supported  | v2.5.0 |
+
+| Name                  |  Type  | Default | Description                            | Since  |
+| ----------------------- | :------: | :-------: | ---------------------------------------- | -------- |
+| name**_(required)_**  | string |         | attribute name.                        | v2.5.0 |
+| value**_(required)_** | string |         | attribute value. wildcard is supported | v2.5.0 |
 
 #### Custom log map object
 
-| Name       |  Type   |      Default       | Description                                      | Since  |
-| ---------- | :-----: | :----------------: | ------------------------------------------------ | ------ |
-| name       | string  |                    | name of the custom log. wildcard is supported    | v2.1.0 |
-| message    | string  |                    | message of the custom log. wildcard is supported | v2.1.0 |
-| icon       | string  | default state icon | icon to use                                      | v2.1.0 |
-| icon_color | string  |                    | icon color for this custom log                   | v2.1.0 |
-| hidden     | boolean | false              | hide custom log                                  | v2.3.0 |
+
+| Name       |  Type  |      Default      | Description                                      | Since  |
+| ------------ | :-------: | :------------------: | -------------------------------------------------- | -------- |
+| name       | string |                   | name of the custom log. wildcard is supported    | v2.1.0 |
+| message    | string |                   | message of the custom log. wildcard is supported | v2.1.0 |
+| icon       | string | default state icon | icon to use                                      | v2.1.0 |
+| icon_color | string |                   | icon color for this custom log                   | v2.1.0 |
+| hidden     | boolean |       false       | hide custom log                                  | v2.3.0 |
 
 If you use wildcard, make sure to put the more specific custom log first.
 
@@ -171,33 +184,49 @@ If you use wildcard, make sure to put the more specific custom log first.
 
 All properties are optional.
 
-| Name        | Default |     Options      | Description                                 |
-| ----------- | :-----: | :--------------: | ------------------------------------------- |
-| state       | `true`  | `true` / `false` | Display state                               |
-| duration    | `true`  | `true` / `false` | Display duration                            |
-| start_date  | `true`  | `true` / `false` | Display start date                          |
-| end_date    | `true`  | `true` / `false` | Display end date                            |
-| icon        | `true`  | `true` / `false` | Display icon                                |
+
+| Name        | Default |     Options     | Description                                 |
+| ------------- | :-------: | :----------------: | --------------------------------------------- |
+| state       | `true` | `true` / `false` | Display state                               |
+| duration    | `true` | `true` / `false` | Display duration                            |
+| start_date  | `true` | `true` / `false` | Display start date                          |
+| end_date    | `true` | `true` / `false` | Display end date                            |
+| icon        | `true` | `true` / `false` | Display icon                                |
 | separator   | `false` | `true` / `false` | Display separator                           |
-| entity_name | `true`  | `true` / `false` | Display entity name (for multiple entities) |
+| entity_name | `true` | `true` / `false` | Display entity name (for multiple entities) |
+| elapsed_time| `false` | `true` / `false` | Display elapsed time from the previous item cannot be used in conjuntion with duration = true |
+
+
+#### Gallery object
+
+
+| Name                  |  Type  |    Default    | Description                                                         |
+| ----------------------- | :------: | :-------------: | --------------------------------------------------------------------- |
+| show_gallery**_(required)_** | boolean |               | if the gallery feature must be shown.                                             |
+| variations                 | string |               | pattern vor the variations for the file name. Variations must be separated by the pipe char.                                            |
+| naming_pattern                  | string |               | the pattern to generate the filenames.`$entity_value` and `$variation` placehoder can be used in the pattern |
+Example here [Gallery](#gallery)
 
 #### Attribute object
 
-| Name                   |  Type  |    Default    | Description                                                          |
-| ---------------------- | :----: | :-----------: | -------------------------------------------------------------------- |
-| value **_(required)_** | string |               | name of the attributes.                                              |
-| label                  | string | same as value | String to show as label.                                             |
-| type                   | string |               | Type of the value used for formatting. `date` or `url` are supported |
-| link_label             | string |               | Link label to use when `type` is `url`.                              |
+
+| Name                  |  Type  |    Default    | Description                                                         |
+| ----------------------- | :------: | :-------------: | --------------------------------------------------------------------- |
+| value**_(required)_** | string |               | name of the attributes.                                             |
+| label                 | string | same as value | String to show as label.                                            |
+| type                  | string |               | Type of the value used for formatting.`date` or `url` are supported |
+| link_label            | string |               | Link label to use when`type` is `url`.                              |
+
 
 #### Duration object
 
-| Name      |  Type        |        Default          | Description                                                                                                                                     |
-| --------- | :----------: | :---------------------: | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| largest   | number       |          `1`            | Number representing the maximum number of units to display for the duration. Use `full` for no limitation                                       |
-| labels    | [duration labels object](#from-v150) | | [Style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) of the separator.                                                        |
-| units     | string array |                         | Array of strings to define which units are used to display the duration (if needed). Allowed values: ['y', 'mo', 'w', 'd', 'h', 'm', 's', 'ms'] |
-| delimiter | string       |                         | String to display between the previous unit and the next value.                                                                                 |
+
+| Name      |                 Type                 | Default | Description                                                                                                                                     |
+| ----------- | :------------------------------------: | :-------: | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| largest   |                number                |   `1`   | Number representing the maximum number of units to display for the duration. Use`full` for no limitation                                        |
+| labels    | [duration labels object](#from-v150) |         | [Style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) of the separator.                                                        |
+| units     |             string array             |         | Array of strings to define which units are used to display the duration (if needed). Allowed values: ['y', 'mo', 'w', 'd', 'h', 'm', 's', 'ms'] |
+| delimiter |                string                |         | String to display between the previous unit and the next value.                                                                                 |
 
 #### Duration labels object
 
@@ -207,8 +236,9 @@ This configuration is _Deprecated since v.1.5.0_.
 
 Allows to have custom labels for duration. Must contains `${value}` which will be replaced by the duration.
 
+
 | Name    |  Type  |   Default   | Description        |
-| ------- | :----: | :---------: | ------------------ |
+| --------- | :------: | :-----------: | -------------------- |
 | second  | string | `${value}s` | label for second.  |
 | seconds | string | `${value}s` | label for seconds. |
 | minute  | string | `${value}m` | label for minute.  |
@@ -222,57 +252,62 @@ Allows to have custom labels for duration. Must contains `${value}` which will b
 
 Allows to have custom labels for duration.
 
-| Name    |  Type  |   Default   | Description        |
-| ------- | :----: | :---------: | ------------------ |
-| second  | string | `s`         | label for second.  |
-| minute  | string | `m`         | label for minute.  |
-| hour    | string | `h`         | label for hour.    |
-| day     | string | `d`         | label for day.     |
-| week    | string | `w`         | label for week.    |
-| month   | string | `m`         | label for month.   |
+
+| Name   |  Type  | Default | Description       |
+| -------- | :------: | :-------: | ------------------- |
+| second | string |   `s`   | label for second. |
+| minute | string |   `m`   | label for minute. |
+| hour   | string |   `h`   | label for hour.   |
+| day    | string |   `d`   | label for day.    |
+| week   | string |   `w`   | label for week.   |
+| month  | string |   `m`   | label for month.  |
 
 #### Hidden config object
 
 Introduce in 1.10.0
 
-| Name      |  Type                                                             |   Default   | Description        |
-| -------   | :---------------------------------------------------------------: | :---------: | ------------------ |
-| state     | string                                                            |             | state to hide.     |
-| attribute | [Attribute hidden config object](#attribute-hidden-config-object) |             | attribute to match |
+
+| Name      |                               Type                               | Default | Description        |
+| ----------- | :-----------------------------------------------------------------: | :-------: | -------------------- |
+| state     |                              string                              |         | state to hide.     |
+| attribute | [Attribute hidden config object](#attribute-hidden-config-object) |         | attribute to match |
 
 #### Attribute hidden config object
 
 Introduce in 1.10.0
 
-| Name                   |  Type    |   Default   | Description                                       |
-| ---------------------- | :------: | :---------: | ------------------------------------------------- |
-| name **_(required)_**  | string   |             | the name of the attribute                         |
-| value **_(required)_** | string   |             | the value of the attribute. wildcard is supported |
-| hideIfMissing          | boolean  | false       | hidden if attribute is not set.                   |
+
+| Name                  |  Type  | Default | Description                                       |
+| ----------------------- | :-------: | :-------: | --------------------------------------------------- |
+| name**_(required)_**  | string |         | the name of the attribute                         |
+| value**_(required)_** | string |         | the value of the attribute. wildcard is supported |
+| hideIfMissing         | boolean |  false  | hidden if attribute is not set.                   |
 
 #### Separator style object
 
-| Name  |  Type  |        Default         | Description                                                                              |
-| ----- | :----: | :--------------------: | ---------------------------------------------------------------------------------------- |
-| width | number |          `1`           | Width of the separator.                                                                  |
-| style | string |        `solid`         | [Style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) of the separator. |
+
+| Name  |  Type  |        Default        | Description                                                                              |
+| ------- | :------: | :----------------------: | ------------------------------------------------------------------------------------------ |
+| width | number |          `1`          | Width of the separator.                                                                  |
+| style | string |        `solid`        | [Style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) of the separator. |
 | color | string | `var(--divider-color)` | Color of the separator.                                                                  |
 
 #### Action Options
 
-| Name            | Type   | Requirement  | Description                                                                                                                            | Default     |
-| --------------- | ------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| action          | string | **Required** | Action to perform (more-info, toggle, call-service, navigate url, none)                                                                | `more-info` |
-| navigation_path | string | **Optional** | Path to navigate to (e.g. /lovelace/0/) when action defined as navigate                                                                | `none`      |
-| url             | string | **Optional** | URL to open on click when action is url. The URL will open in a new tab                                                                | `none`      |
-| service         | string | **Optional** | Service to call (e.g. media_player.media_play_pause) when action defined as call-service                                               | `none`      |
-| service_data    | object | **Optional** | Service data to include (e.g. entity_id: media_player.bedroom) when action defined as call-service                                     | `none`      |
-| haptic          | string | **Optional** | Haptic feedback _success, warning, failure, light, medium, heavy, selection_ | `none`      |
-| repeat          | number | **Optional** | How often to repeat the `hold_action` in milliseconds.                                                                                 | `none`       |
+
+| Name            | Type   | Requirement  | Description                                                                                        | Default     |
+| ----------------- | -------- | -------------- | ---------------------------------------------------------------------------------------------------- | ------------- |
+| action          | string | **Required** | Action to perform (more-info, toggle, call-service, navigate url, none)                            | `more-info` |
+| navigation_path | string | **Optional** | Path to navigate to (e.g. /lovelace/0/) when action defined as navigate                            | `none`      |
+| url             | string | **Optional** | URL to open on click when action is url. The URL will open in a new tab                            | `none`      |
+| service         | string | **Optional** | Service to call (e.g. media_player.media_play_pause) when action defined as call-service           | `none`      |
+| service_data    | object | **Optional** | Service data to include (e.g. entity_id: media_player.bedroom) when action defined as call-service | `none`      |
+| haptic          | string | **Optional** | Haptic feedback_success, warning, failure, light, medium, heavy, selection_                        | `none`      |
+| repeat          | number | **Optional** | How often to repeat the`hold_action` in milliseconds.                                              | `none`      |
 
 ## Custom Styling
 
-The card style can be customize using [lovelace card mod](https://github.com/thomasloven/lovelace-card-mod)  
+The card style can be customize using [lovelace card mod](https://github.com/thomasloven/lovelace-card-mod)
 
 After installation, you just have to add a  card_mod properties with your custom styles
 
@@ -317,8 +352,9 @@ card_mod:
 
 Here is the list of style you can override:
 
+
 | Class                  | Target                             |
-|------------------------|------------------------------------|
+| ------------------------ | ------------------------------------ |
 | .item                  | container for an entry             |
 | .history               | if entry is entity history         |
 | .custom-log            | if entry is custom log             |
@@ -369,7 +405,7 @@ title: Day history
 ```yaml
 type: 'custom:multiple-logbook-card'
 desc: true
-entities: 
+entities:
   - entity: sun.sun
     hidden_state:
       - above_horizon
@@ -504,6 +540,57 @@ custom_log_map:
 ```
 
 ![Custom log with custom icon](./images/custom_log_map.png)
+
+### Gallery
+
+```yaml
+type: custom:multiple-logbook-card
+entities:
+  - entity: counter.counter_a
+    label: Enters
+  - entity: counter.counter_b
+    label: Exits
+...
+gallery:
+  show_gallery: true
+  variations: ext-1d|int-1d|int-2d
+  naming_pattern: /local/snapshots/catflap/$entity_value-$variation.jpg
+
+```
+
+
+### Service Call
+
+```yaml
+type: custom:multiple-logbook-card
+entities:
+  - entity: counter.counter_a
+    label: Enters
+  - entity: counter.counter_b
+    label: Exits
+...
+service_to_call: script.do_something
+```
+to the service `do_something`, in this case a script, all the following parameters for the history item will be passed:
+      `entity_id`,
+      `name`,
+      `state`,
+      `label`,
+      `start`,
+      `end`,
+      `duration`,
+      `elapsed_time`,
+      `attributes` (array of Attributes)
+They can be used in a template inside the service body, for example in the script:
+```yaml
+action: input_text.set_value
+metadata: {}
+data:
+  value: "This history item is from entity {{name}}-{{state}} and started at {{start}} after {{elapsed_time}} since the previous history item happened"
+target:
+  entity_id: input_text.gallery_image_id
+```
+
 
 <!-- Badges -->
 

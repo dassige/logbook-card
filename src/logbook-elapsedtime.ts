@@ -4,7 +4,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { LogbookCardConfig, ExtendedHomeAssistant } from './types';
 import { HumanizeDurationLanguage, HumanizeDuration, HumanizeDurationOptions } from 'humanize-duration-ts';
 
-@customElement('logbook-duration')
+@customElement('logbook-elapsedtime')
 export class LogbookDuration extends LitElement {
   @property({ type: Object }) public hass!: ExtendedHomeAssistant;
   @property({ type: Object }) public config!: LogbookCardConfig;
@@ -32,7 +32,7 @@ export class LogbookDuration extends LitElement {
       ? this.hass?.language
       : 'en';
 
-    if (this.config?.duration?.labels) {
+
       humanizeDuration.addLanguage('custom', {
         y: () => 'y',
         mo: () => this.config?.duration?.labels?.month ?? 'mo',
@@ -45,22 +45,23 @@ export class LogbookDuration extends LitElement {
         decimal: '',
       });
       language = 'custom';
-    }
+
 
     const humanizeDurationOptions: HumanizeDurationOptions = {
       language,
       units: this.config?.duration?.units,
       round: true,
     };
-
+/*
     if (this.config?.duration?.largest !== 'full') {
       humanizeDurationOptions['largest'] = this.config?.duration?.largest;
     }
-
+*/
+    /*
     if (this.config?.duration?.delimiter !== undefined) {
       humanizeDurationOptions['delimiter'] = this.config.duration.delimiter;
     }
-
+*/
     return humanizeDuration.humanize(durationInMs, humanizeDurationOptions);
   }
 

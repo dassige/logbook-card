@@ -30,6 +30,7 @@ export interface LogbookCardConfigBase extends LovelaceCardConfig {
   allow_copy?: boolean;
   service_to_call?: string;
   gallery?: GalleryConfiguration;
+  elapsed_time?: DurationConfig;
  }
 
 export interface EntityCardConfig {
@@ -82,6 +83,7 @@ export interface DurationConfig {
   labels?: DurationLabel | undefined;
   delimiter?: string;
   units?: Array<UnitName>;
+  only_first?: boolean;
 }
 
 export interface DurationLabel {
@@ -162,6 +164,7 @@ export interface History {
   duration: number;
   icon: IconState;
   elapsed_time: number;
+  index: number;
 }
 
 export interface CustomLogEvent {

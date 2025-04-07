@@ -8,16 +8,16 @@ import { HumanizeDurationLanguage, HumanizeDuration, HumanizeDurationOptions } f
 export class LogbookDuration extends LitElement {
   @property({ type: Object }) public hass!: ExtendedHomeAssistant;
   @property({ type: Object }) public config!: LogbookCardConfig;
-  @property({ type: Number }) public duration!: number;
+  @property({ type: Number }) public elapsed_time!: number;
 
   protected render(): TemplateResult | void {
 
-    if (!this.config || !this.hass || !this.duration) {
+    if (!this.config || !this.hass || !this.elapsed_time) {
       return html``;
     }
 
      return html`
-      ${this.getDuration(this.duration)}
+      ${this.getDuration(this.elapsed_time)}
     `;
 
   }
@@ -35,12 +35,12 @@ export class LogbookDuration extends LitElement {
 
       humanizeDuration.addLanguage('custom', {
         y: () => 'y',
-        mo: () => this.config?.duration?.labels?.month ?? 'mo',
-        w: () => this.config?.duration?.labels?.week ?? 'w',
-        d: () => this.config?.duration?.labels?.day ?? 'd',
-        h: () => this.config?.duration?.labels?.hour ?? 'h',
-        m: () => this.config?.duration?.labels?.minute ?? 'm',
-        s: () => this.config?.duration?.labels?.second ?? 's',
+        mo: () => this.config?.elapsed_time?.labels?.month ?? 'mo',
+        w: () => this.config?.elapsed_time?.labels?.week ?? 'w',
+        d: () => this.config?.elapsed_time?.labels?.day ?? 'd',
+        h: () => this.config?.elapsed_time?.labels?.hour ?? 'h',
+        m: () => this.config?.elapsed_time?.labels?.minute ?? 'm',
+        s: () => this.config?.elapsed_time?.labels?.second ?? 's',
         ms: () => 'ms',
         decimal: '',
       });
@@ -49,19 +49,18 @@ export class LogbookDuration extends LitElement {
 
     const humanizeDurationOptions: HumanizeDurationOptions = {
       language,
-      units: this.config?.duration?.units,
+      units: this.config?.elapsed_time?.units,
       round: true,
     };
-/*
-    if (this.config?.duration?.largest !== 'full') {
-      humanizeDurationOptions['largest'] = this.config?.duration?.largest;
+
+    if (this.config?.elapsed_time?.largest !== 'full') {
+      humanizeDurationOptions['largest'] = this.config?.elapsed_time?.largest;
     }
-*/
-    /*
-    if (this.config?.duration?.delimiter !== undefined) {
-      humanizeDurationOptions['delimiter'] = this.config.duration.delimiter;
+
+    if (this.config?.elapsed_time?.delimiter !== undefined) {
+      humanizeDurationOptions['delimiter'] = this.config.elapsed_time.delimiter;
     }
-*/
+
     return humanizeDuration.humanize(durationInMs, humanizeDurationOptions);
   }
 

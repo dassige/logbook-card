@@ -38,6 +38,7 @@ export const toHistory = (
         attributes: extractAttributes(h, config, hass),
         icon: mapIcon(h, config.state_map || []),
         elapsed_time: 0,
+        index: 0,
       }))
       .map((x, i, arr) => {
         if (i < arr.length - 1) {

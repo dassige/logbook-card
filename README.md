@@ -123,6 +123,7 @@ the `custom:multiple-logbook-card` card has been introduce in v2.0.0.
 | separator_style   | [separator_style object](#separator-style-object) | optional     | v2.0.0 |            |                                | see style for separator (if activated)                                                                                                      |
 | collapse          | number                                            | optional     | v2.0.0 |            |                                | Number of entities to show. Rest will be available in expandable section                                                                    |
 | duration          | [duration object](#duration-object)               | optional     | v2.0.0 |            | duration configuration         |                                                                                                                                             |
+| elapsed_time          | [duration object](#duration-object)                      | optional     | DGSoft  |            |                          | Elapsed time  configuration                                                                                                                      |
 | scroll            | boolean                                           | optional     | v2.0.0 |            | true                           | set a max height for card and use scrollbar                                                                                                 |
 | tap_action        | [action object](#action-options)                  | optional     | v2.0.0 |            | action: more-info              | Action to take on tap                                                                                                                       |
 | hold_action       | [action object](#action-options)                  | optional     | v2.0.0 |            | none                           | Action to take on hold                                                                                                                      |
@@ -194,7 +195,7 @@ All properties are optional.
 | icon        | `true` | `true` / `false` | Display icon                                |
 | separator   | `false` | `true` / `false` | Display separator                           |
 | entity_name | `true` | `true` / `false` | Display entity name (for multiple entities) |
-| elapsed_time| `false` | `true` / `false` | Display elapsed time from the previous item cannot be used in conjuntion with duration = true |
+| elapsed_time| `false` | `true` / `false` | Display elapsed time from the previous item |
 
 
 #### Gallery object
@@ -227,6 +228,8 @@ Example here [Gallery](#gallery)
 | labels    | [duration labels object](#from-v150) |         | [Style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) of the separator.                                                        |
 | units     |             string array             |         | Array of strings to define which units are used to display the duration (if needed). Allowed values: ['y', 'mo', 'w', 'd', 'h', 'm', 's', 'ms'] |
 | delimiter |                string                |         | String to display between the previous unit and the next value.                                                                                 |
+| only_first         | boolean |  false  | if duration is showing and only_first is true, only the duratin for the first history item will be displayed, for the purpose of give the time elapsed from the first item and now (DGSoft)                   |
+
 
 #### Duration labels object
 

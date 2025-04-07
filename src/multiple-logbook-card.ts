@@ -89,6 +89,7 @@ export class MultipleLogbookCard extends LogbookBaseCard {
       })),
       show: { ...DEFAULT_SHOW, ...config.show },
       duration: { ...DEFAULT_DURATION, ...config.duration },
+      elapsed_time: { ...DEFAULT_DURATION, ...config.elapsed_time },
       duration_labels: { ...config.duration_labels },
       separator_style: { ...DEFAULT_SEPARATOR_STYLE, ...config.separator_style },
     };
@@ -152,6 +153,7 @@ export class MultipleLogbookCard extends LogbookBaseCard {
               value = dateDiffMillisecs(currentDate,previousStartDate);
             }
             (allHistory[i - 1] as History).elapsed_time = value;
+            (allHistory[i - 1] as History).index = i;
             previousStartDate = currentDate;
           }
 

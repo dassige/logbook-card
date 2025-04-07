@@ -15,7 +15,6 @@ import { isSameDay } from './date-helpers';
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
 import PinchZoom from 'pinch-zoom-js';
 
-
 export abstract class LogbookBaseCard extends LitElement {
   @property({ attribute: false }) public hass!: ExtendedHomeAssistant;
 
@@ -133,25 +132,11 @@ export abstract class LogbookBaseCard extends LitElement {
                   `
                 : html``
             }
-            ${
-              config?.show?.duration?
-                 html`
-                      <span class="duration" >
-                        <logbook-duration .hass="${this.hass}" .config="${config}" .duration="${item.duration}"></logbook-duration>
-                      </span>
-                    `
-                : html``
-             }
-             ${
-              config?.show?.elapsed_time?
-                 html`
-                      <span class="duration" >
-                        <logbook-elapsedtime .hass="${this.hass}" .config="${config}" .duration="${item.elapsed_time}"></logbook-elapsedtime>
-                      </span>
-                    `
-                : html``
-             }
+            ${this.renderHistoryDuration(item, config)}
+            <div>
             ${this.renderHistoryDate(item, config)}${item.attributes?.map(this.renderAttributes)}
+            ${this.renderHistoryElapsedTime(item, config)}
+            </div>
           </div>
         </div>
         <div class="row-item-images" id="image_${id}"></div>
@@ -184,8 +169,7 @@ export abstract class LogbookBaseCard extends LitElement {
         @touchmove="${event => this.handleTouchMove(event)}"
       >
         <img class="modal-content" id="popupImage" />
-       <div id="popupCaption"></div>
-
+        <div id="popupCaption"></div>
       </div>
     `;
   }
@@ -299,7 +283,7 @@ export abstract class LogbookBaseCard extends LitElement {
         captionText.innerHTML = value;
       }
     }
-//setup pinch and zoom
+    //setup pinch and zoom
     const pz = new PinchZoom(modalImg, {
       draggableUnzoomed: false,
       zoomOutFactor: 1,
@@ -347,7 +331,6 @@ export abstract class LogbookBaseCard extends LitElement {
       duration: historyItem.duration,
       elapsed_time: historyItem.elapsed_time,
       attributes: historyItem.attributes,
-
     });
 
     /***EMPTY History obj
@@ -403,6 +386,32 @@ export abstract class LogbookBaseCard extends LitElement {
     `;
   }
 
+  protected renderHistoryDuration(item: History, config: LogbookCardConfigBase): TemplateResult | void {
+    if (config?.show?.duration) {
+      if ((config?.duration?.only_first && item.index == 1) || !config?.duration?.only_first) {
+        return html`
+        <span class="duration">
+          <logbook-duration .hass="${this.hass}" .config="${config}" .duration="${item.duration}"></logbook-duration>
+        ${config?.duration?.only_first ? ' ago' : ''}</span>
+      `;
+      }
+    }
+    return html``;
+  }
+  protected renderHistoryElapsedTime(item: History, config: LogbookCardConfigBase): TemplateResult | void {
+    if (config?.show?.elapsed_time) {
+      return html`
+        <span class="elapsed_time">
+          <logbook-elapsedtime
+            .hass="${this.hass}"
+            .config="${config}"
+            .elapsed_time="${item.elapsed_time}"
+          ></logbook-elapsedtime>
+        </span>
+      `;
+    }
+    return html``;
+  }
   protected renderCustomLogIcon(customLog: CustomLogEvent, config: LogbookCardConfigBase): TemplateResult | void {
     if (config?.show?.icon) {
       const state = this.hass.states[customLog.entity] as HassEntity;
@@ -479,24 +488,24 @@ export abstract class LogbookBaseCard extends LitElement {
   renderHistoryDate(item: History, config: LogbookCardConfigBase): TemplateResult {
     if (config?.show?.start_date && config?.show?.end_date) {
       return html`
-        <div class="date">
+        <span class="date">
           <logbook-date .hass=${this.hass} .date=${item.start} .config=${config}></logbook-date> -
           <logbook-date .hass=${this.hass} .date=${item.end} .config=${config}></logbook-date>
-        </div>
+        </span>
       `;
     }
     if (config?.show?.end_date) {
       return html`
-        <div class="date">
+        <span class="date">
           <logbook-date .hass=${this.hass} .date=${item.end} .config=${config}></logbook-date>
-        </div>
+        </span>
       `;
     }
     if (config?.show?.start_date) {
       return html`
-        <div class="date">
+        <span class="date">
           <logbook-date .hass=${this.hass} .date=${item.start} .config=${config}></logbook-date>
-        </div>
+        </span>
       `;
     }
     return html``;
@@ -630,6 +639,13 @@ export abstract class LogbookBaseCard extends LitElement {
         font-size: 0.85rem;
         font-style: italic;
         float: right;
+      }
+      .elapsed_time {
+        font-size: 0.85rem;
+        font-style: italic;
+        float: right;
+        color: rgb(2, 109, 41);
+      }
       .date,
       .attribute {
         font-size: 0.8rem;

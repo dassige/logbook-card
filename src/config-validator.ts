@@ -26,8 +26,9 @@ export const checkBaseConfig = (config: LogbookCardConfigBase): void => {
   if (config.minimal_duration && !Number.isInteger(config.minimal_duration) && config.minimal_duration <= 0) {
     throw new Error(localize('common.invalid_minimal_duration'));
   }
-
+/*
   if (config.show?.duration && config.show?.elapsed_time) {
     throw new Error(localize('common.choose_duration_or_elapsed'));
   }
+  */
 };

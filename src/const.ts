@@ -3,8 +3,8 @@ export const CARD_VERSION = '2.5.6';
 
 export const DEFAULT_SHOW: ShowConfiguration = {
   state: true,
-  duration: true,
-  elapsed_time: false,
+  duration: false,
+  elapsed_time: true,
   start_date: true,
   end_date: true,
   icon: true,
@@ -13,10 +13,20 @@ export const DEFAULT_SHOW: ShowConfiguration = {
 };
 
 export const DEFAULT_DURATION: DurationConfig = {
-  largest: 1,
-  labels: undefined,
+  largest: 'full',
+  labels: {
+    month: "m",
+    week: "w",
+    day: "d",
+    hour:   "h",
+    minute: "m",
+    second:   "s" },
+  /*undefined,
+
+*/
   delimiter: undefined,
   units: ['w', 'd', 'h', 'm', 's'],
+  only_first: false,
 };
 
 export const DEFAULT_SEPARATOR_STYLE: SeparatorStyleConfig = {

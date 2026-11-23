@@ -206,6 +206,7 @@ All properties are optional.
 | show_gallery**_(required)_** | boolean |               | if the gallery feature must be shown.                                             |
 | variations                 | string |               | pattern vor the variations for the file name. Variations must be separated by the pipe char.                                            |
 | naming_pattern                  | string |               | the pattern to generate the filenames.`$entity_value` and `$variation` placehoder can be used in the pattern |
+| media_pattern                   | string |               | same as `naming_pattern`, for files in the HA media source (`/media/local/...`, login required). The card requests a signed URL (`auth/sign_path`) for each image. Takes precedence over `naming_pattern`. Use this key, not `naming_pattern`, for `/media` paths: an older cached copy of the card ignores it instead of fetching unauthenticated (which counts as a failed login and can get the browser's IP banned) |
 Example here [Gallery](#gallery)
 
 #### Attribute object

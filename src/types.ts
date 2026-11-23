@@ -54,6 +54,10 @@ export interface GalleryConfiguration {
   show_gallery: boolean;
   variations: string;
   naming_pattern: string;
+  /** Like naming_pattern, for /media/... (HA media source) paths, which this card signs.
+   *  Separate key so an older cached copy of the card (which can't sign) ignores it instead of
+   *  requesting /media/... unauthenticated and getting the browser's IP banned. */
+  media_pattern?: string;
 }
 
 export interface HiddenConfig {

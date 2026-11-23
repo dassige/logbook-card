@@ -11,6 +11,7 @@ import { property } from 'lit/decorators.js';
 import { handleAction, ActionHandlerEvent, hasAction, handleActionConfig } from 'custom-card-helpers';
 import { actionHandler } from './action-handler-directive';
 import { styleMap, StyleInfo } from 'lit/directives/style-map.js';
+import { until } from 'lit/directives/until.js';
 import { isSameDay } from './date-helpers';
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
 import PinchZoom from 'pinch-zoom-js';
@@ -182,7 +183,9 @@ export abstract class LogbookBaseCard extends LitElement {
       _variations = [''];
     }
     let namingPattern;
-    if (config.gallery?.naming_pattern !== undefined && config.gallery?.naming_pattern !== null) {
+    if (config.gallery?.media_pattern) {
+      namingPattern = config.gallery.media_pattern;
+    } else if (config.gallery?.naming_pattern !== undefined && config.gallery?.naming_pattern !== null) {
       namingPattern = config.gallery?.naming_pattern;
     } else {
       namingPattern = '';
@@ -196,7 +199,11 @@ export abstract class LogbookBaseCard extends LitElement {
       content = html`
         ${content}
         <div class="column-item-images">
-          <img src="${filename}" @click="${() => this.popupImage(filename, id)}" class="hover-shadow" />
+          <img
+            src="${until(this.resolveImageUrl(filename), '')}"
+            @click="${() => this.popupImage(filename, id)}"
+            class="hover-shadow"
+          />
         </div>
       `;
     }
@@ -204,6 +211,26 @@ export abstract class LogbookBaseCard extends LitElement {
     return html`
       ${content}
     `;
+  }
+
+  /**
+   * Images under /media/... (HA media source) need authentication, and an <img> can't send the
+   * access token. So ask HA for a signed, time-limited URL (the same mechanism HA's media browser
+   * uses). Other paths (/local/..., http...) are returned unchanged.
+   */
+  async resolveImageUrl(path: string): Promise<string> {
+    if (!path.startsWith('/media/') || !this.hass) return path;
+    try {
+      const signed = await this.hass.callWS<{ path: string }>({
+        type: 'auth/sign_path',
+        path,
+        expires: 3600,
+      });
+      return signed.path;
+    } catch (err) {
+      console.warn('logbook-card: could not sign image path', path, err);
+      return path;
+    }
   }
 
   generateGalleryFileName(namingPattern: string, value: string, varia: string) {
@@ -272,13 +299,14 @@ export abstract class LogbookBaseCard extends LitElement {
     });
   }
 
-  loadImageForPopup(file, value) {
+  async loadImageForPopup(file, value) {
     const modal = this.shadowRoot?.querySelector('#imageModal') as HTMLElement;
     const modalImg = this.shadowRoot?.querySelector('#popupImage') as HTMLImageElement;
     const captionText = this.shadowRoot?.querySelector('#popupCaption');
 
     if (modal.style.display === 'block') {
-      modalImg.src = file;
+      // signed again on every open: a thumbnail's signature may have expired by now
+      modalImg.src = await this.resolveImageUrl(file);
       if (captionText) {
         captionText.innerHTML = value;
       }
